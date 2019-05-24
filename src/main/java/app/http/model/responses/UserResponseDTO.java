@@ -1,4 +1,4 @@
-package app.http.model;
+package app.http.model.responses;
 
 import java.util.List;
 

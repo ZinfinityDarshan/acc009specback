@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -53,8 +54,10 @@ public class JwtTokenProvider {
     claims.put("auth", roles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority())).filter(Objects::nonNull).collect(Collectors.toList()));
 
     Date now = new Date();
-    Date validity = new Date(now.getTime() + validityInMilliseconds);
+    //Date validity = new Date(now.getTime() + validityInMilliseconds);
 
+    Date validity = DateUtils.addHours(now, 1);
+    
     return Jwts.builder()//
         .setClaims(claims)//
         .setIssuedAt(now)//

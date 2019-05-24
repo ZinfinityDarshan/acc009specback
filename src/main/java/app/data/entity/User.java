@@ -20,15 +20,19 @@ public class User {
   @Id
   private String id;
 
+  private String email;
+
   @Size(min = 4, max = 255, message = "Minimum username length: 4 characters")
   private String username;
 
-  private String email;
+  private String phoneno;
 
   @Size(min = 8, message = "Minimum password length: 8 characters")
   private String password;
 
   List<Role> roles;
+  
+  private String active;
 
 }
 

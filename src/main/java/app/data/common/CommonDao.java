@@ -19,4 +19,11 @@ public class CommonDao {
 		};
 		return false;
 	}
+	
+	public boolean userExistbyEmail(String email) {
+		if(repo.findByEmail(email)!= null) {
+			return true;
+		};
+		return false;
+	}
 }

@@ -1,5 +1,7 @@
 package app.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.modelmapper.ModelMapper;
@@ -14,15 +16,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.constants.ErrorConstants;
 import app.data.entity.User;
-import app.http.model.UserDataDTO;
-import app.http.model.UserResponseDTO;
+import app.data.repository.general.UserRepository;
+import app.http.model.requests.SignupRequest;
+import app.http.model.responses.EntityAddedResponse;
+import app.http.model.responses.SecureLoginResponse;
+import app.http.model.responses.UserDataDTO;
+import app.http.model.responses.UserResponseDTO;
 import app.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 
 @RestController
@@ -35,27 +44,46 @@ public class UserController {
 
   @Autowired
   private ModelMapper modelMapper;
+  
+  @Autowired UserRepository userrepo;
+  
 
   @PostMapping("/signin")
   @ApiOperation(value = "${UserController.signin}")
   @ApiResponses(value = {//
       @ApiResponse(code = 400, message = "Something went wrong"), //
       @ApiResponse(code = 422, message = "Invalid username/password supplied")})
-  public String login(//
+  public Mono<SecureLoginResponse> login(//
       @ApiParam("Username") @RequestParam String username, //
       @ApiParam("Password") @RequestParam String password) {
-    return userService.signin(username, password);
+    return Mono.just(SecureLoginResponse.builder().username(username).
+    		token(userService.signin(username, password)).status(true).build());
+    		
   }
 
+//  @PostMapping("/signup")
+//  @ApiOperation(value = "${UserController.signup}")
+//  @ApiResponses(value = {//
+//      @ApiResponse(code = 400, message = "Something went wrong"), //
+//      @ApiResponse(code = 403, message = "Access denied"), //
+//      @ApiResponse(code = 422, message = "Username is already in use"), //
+//      @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
+//  public String signup(@ApiParam("Signup User") @RequestBody UserDataDTO user) {
+//    return userService.signup(modelMapper.map(user, User.class));
+//  }
+  
   @PostMapping("/signup")
-  @ApiOperation(value = "${UserController.signup}")
-  @ApiResponses(value = {//
-      @ApiResponse(code = 400, message = "Something went wrong"), //
-      @ApiResponse(code = 403, message = "Access denied"), //
-      @ApiResponse(code = 422, message = "Username is already in use"), //
-      @ApiResponse(code = 500, message = "Expired or invalid JWT token")})
-  public String signup(@ApiParam("Signup User") @RequestBody UserDataDTO user) {
-    return userService.signup(modelMapper.map(user, User.class));
+  public SecureLoginResponse signup (@RequestBody SignupRequest req) {
+	  String token = userService.signup(modelMapper.map(req, User.class));
+	  SecureLoginResponse res;
+	  if(token!=ErrorConstants.InternalError) {
+		 res  = SecureLoginResponse.builder().username(req.getUsername()).
+				  status(true).token(token).build();
+		 return res;
+	  }
+	  res = SecureLoginResponse.builder().username(req.getUsername()).status(false)
+			  .token("").errorCode(ErrorConstants.InternalError).errorMessage("Internal Error").build();
+	  return res;
   }
 
   @DeleteMapping(value = "/{username}")
@@ -98,6 +126,11 @@ public class UserController {
   @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
   public String refresh(HttpServletRequest req) {
     return userService.refresh(req.getRemoteUser());
+  }
+  
+  @GetMapping("/getAllUsers")
+  public List<User> getAllUsers(){
+	return userrepo.findAll();
   }
 
 }

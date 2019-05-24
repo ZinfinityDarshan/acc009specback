@@ -1,4 +1,4 @@
-package app.http.model;
+package app.http.model.responses;
 
 import java.util.List;
 
@@ -11,6 +11,10 @@ public class UserDataDTO {
   private String username;
   @ApiModelProperty(position = 1)
   private String email;
+  @ApiModelProperty(position = 1)
+  private String phoneno;
+  @ApiModelProperty(position = 1)
+  private String password;
   @ApiModelProperty(position = 2)
   List<Role> roles;
 
