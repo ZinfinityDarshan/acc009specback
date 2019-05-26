@@ -58,7 +58,7 @@ public class UserController {
   public Mono<SecureLoginResponse> login(//
       @ApiParam("Username") @RequestParam String username, //
       @ApiParam("Password") @RequestParam String password) {
-    return Mono.just(SecureLoginResponse.builder().username(username).
+    return Mono.just(SecureLoginResponse.builder().username(userrepo.findByUsername(username).getId()).
     		token(userService.signin(username, password)).status(true).build());
     		
   }
@@ -79,7 +79,7 @@ public class UserController {
 	  String token = userService.signup(modelMapper.map(req, User.class));
 	  SecureLoginResponse res;
 	  if(token!=ErrorConstants.InternalError) {
-		 res  = SecureLoginResponse.builder().username(req.getUsername()).
+		 res  = SecureLoginResponse.builder().username(userrepo.findByUsername(req.getUsername()).getId()).
 				  status(true).token(token).build();
 		 return res;
 	  }
