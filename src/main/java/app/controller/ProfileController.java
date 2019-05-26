@@ -28,6 +28,7 @@ import app.data.repository.reactive.SubjectReactRepo;
 import app.http.model.requests.AddSubjectsToProfileRequest;
 import app.http.model.requests.FollowUserRequest;
 import app.http.model.responses.AddSubjectToProfileResponse;
+import app.http.model.responses.FollowUserResponse;
 import app.service.ProfileService;
 import app.utility.DateTimeUtility;
 import app.utility.IdGeneratorUtility;
@@ -125,8 +126,18 @@ public class ProfileController {
 		return timeutil.getNow();
 	}
 	
-	@PostMapping("followUser") public followUser(FollowUserRequest req) {
-		
+	@PostMapping("followUser") public FollowUserResponse followUser(FollowUserRequest req) {
+		FollowUserResponse res = FollowUserResponse.builder().build();
+		if(req != null) {
+			try {
+				profileservice.followUser(req.getFollower(), req.getFollowing());
+			}catch (Exception e) {
+				
+			}
+		}else {
+			res.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("input is not valid").status(false).build();
+		}
+		return res;
 	}
 	
 }

@@ -19,10 +19,14 @@ import app.constants.DataBaseConstants;
 import app.constants.ErrorConstants;
 import app.constants.ROLE;
 import app.data.common.CommonDao;
+import app.data.entity.Followers;
+import app.data.entity.Following;
 import app.data.entity.Profile;
 import app.data.entity.User;
 import app.data.entity.UserContact;
 import app.data.repository.general.UserRepository;
+import app.data.repository.reactive.FollowersRepoReact;
+import app.data.repository.reactive.FollowingRepoReact;
 import app.data.repository.reactive.ProfileRepoReact;
 import app.data.repository.reactive.UserContactRepoReact;
 import app.exceptions.CustomException;
@@ -54,6 +58,8 @@ public class UserService {
   @Autowired private ProfileRepoReact profilerepo;
   @Autowired private UserContactRepoReact usercontactrepo;
   @Autowired private DateTimeUtility datetimeutil;
+  @Autowired private FollowersRepoReact followerrepo;
+  @Autowired private FollowingRepoReact followingrepo;
 
   public String signin(String username, String password) {
     try {
@@ -77,8 +83,17 @@ public class UserService {
 		      user.setId(userId);
 		      userRepository.save(user);
 		      
+		      //generating follower and following instances and attaching with profile 
+		      Followers fowllower = Followers.builder().userId(userId).build();
+		      Following following = Following.builder().userId(userId).build();
+		      
+		      String f1id = followerrepo.save(fowllower).block().getId();
+		      String f2id = followingrepo.save(following).block().getId();
+		      
+		      
+		      
 		      Profile p = Profile.builder().userId(userId).createdOn(datetimeutil.getNow()).
-		    		  updatedDate(datetimeutil.getNow()).build();
+		    		  updatedDate(datetimeutil.getNow()).followers(f1id).following(f2id).followerCount("1").followingcount("1").build();
 		      UserContact c = UserContact.builder().mobile(user.getPhoneno()).email(user.getEmail())
 		    		  		  .userId(userId).build();
 		      profilerepo.save(p).block();

@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>in.zinfinity</groupId>
 	<artifactId>acc009</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1</version>
 	<packaging>war</packaging>
-	<name>Struggling Stars Backend API </name>
+	<name>acc009</name>
 	<description>All Transactions for Profile, User, Portfolio, Recommendations </description>
 
 	<properties>

@@ -5,17 +5,16 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import app.http.model.responses.HttpStandardResponse;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @JsonFormat
-@EqualsAndHashCode(callSuper=false)
+@SuperBuilder
 public class AddSubjectToProfileResponse extends HttpStandardResponse{
 
 	private List<String> subjects;
