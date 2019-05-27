@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.MappingException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,7 @@ import app.data.repository.general.UserRepository;
 import app.data.repository.reactive.FollowersRepoReact;
 import app.data.repository.reactive.FollowingRepoReact;
 import app.data.repository.reactive.IDConfigurationRepoReact;
+import app.data.repository.reactive.NotificationRepoReact;
 import app.data.repository.reactive.ProfileRepoReact;
 import app.data.repository.reactive.SubjectConstantRepoReact;
 import app.data.repository.reactive.SubjectReactRepo;
@@ -30,6 +33,9 @@ import app.http.model.requests.AddSubjectsToProfileRequest;
 import app.http.model.requests.FollowUserRequest;
 import app.http.model.responses.AddSubjectToProfileResponse;
 import app.http.model.responses.FollowUserResponse;
+import app.http.model.responses.HttpStandardResponse;
+import app.http.model.responses.NotificationResponse;
+import app.http.model.responses.ProfileResponse;
 import app.service.ProfileService;
 import app.utility.DateTimeUtility;
 import app.utility.IdGeneratorUtility;
@@ -52,6 +58,8 @@ public class ProfileController {
 	@Autowired private DateTimeUtility timeutil;
 	@Autowired private FollowersRepoReact followerrepo;
 	@Autowired private FollowingRepoReact followingrepo;
+	@Autowired private ModelMapper modelmapp;
+	@Autowired private NotificationRepoReact notificationrepo;
 
 	
 	@GetMapping("hi")
@@ -138,6 +146,59 @@ public class ProfileController {
 			}
 		}else {
 			res.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("input is not valid").status(false).build();
+		}
+		return res;
+	}
+	
+	@PostMapping("updateProfile") public HttpStandardResponse updateProfile(Profile p){
+		HttpStandardResponse res = HttpStandardResponse.builder().build();
+		if(p!=null) {
+				try {
+					
+					Profile preq = profilerepo.getByUserId(p.getUserId()).block();
+					modelmapp.map(p, preq);
+					
+					profilerepo.save(preq).block();
+					res.builder().status(true).userId(preq.getUserId()).build();
+					
+				}catch (MappingException e) {
+					res.builder().status(false).errorCode(ErrorConstants.InternalError).errorMessage("Internal Error Contact Support").build();
+				}
+				catch (Exception e) {
+					res.builder().status(false).errorCode(ErrorConstants.mappingError).errorMessage("Mapping Exception").build();
+				}				
+		}else{
+			res.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("Input is Either Null or Not Compatible").status(false).build();
+		}
+		return res;
+	}
+	
+	@GetMapping("getProfile/{userId}") public ProfileResponse getProfile(@PathVariable String userId){
+		ProfileResponse res = ProfileResponse.builder().build();
+		if(userId!= null){
+			try {
+				modelmapp.map(profilerepo.getByUserId(userId).block(), res);
+				res.setStatus(true);
+			}catch (Exception e) {
+				res.builder().status(false).errorCode(ErrorConstants.InternalError).errorMessage("Internal Error Contact Support").build();
+			}
+		}else {
+			res.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("Input is Either Null or Not Compatible").status(false).build();
+		}
+		return res;
+	}
+	
+	@GetMapping("getNotificationForUser/{userId}") public NotificationResponse getNotificationsForUser(@PathVariable String userId) {
+		NotificationResponse res = NotificationResponse.builder().build();
+		if(userId!= null){
+			try {
+				 res.setNotifications(notificationrepo.findAllByUserId(userId).collectList().block()); 
+				 res.setStatus(true);
+			}catch (Exception e) {
+				res.builder().status(false).errorCode(ErrorConstants.InternalError).errorMessage("Internal Error Contact Support").build();
+			}
+		}else {
+			res.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("Input is Either Null or Not Compatible").status(false).build();
 		}
 		return res;
 	}
