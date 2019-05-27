@@ -38,8 +38,12 @@ public class Profile {
 	private String followerCount;
 	private String followingcount;
 	private String recommendId;
+	
+	//after uploading URL of profilepic pass that here
 	private String profilePicUrl;
 	private String DOB;
+	
+	//needs to select the profession to identify account Artist or Production
 	private List<String> professsion;
 	
 	//connects subject with Subject.Id
