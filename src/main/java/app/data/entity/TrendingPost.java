@@ -1,7 +1,6 @@
 package app.data.entity;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -13,14 +12,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Document(collection="post")
+@Document(collection="trendingposts")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Post {
-	
-	@Id private String id;
+public class TrendingPost {
+
+@Id private String id;
 	
 	private String postId;
 	
@@ -52,9 +51,7 @@ public class Post {
 	
 	//connecting Likes.id
 	private String likes_id;
-	
 	//connecting Comments.id
-	private List<String> comments_ids;
-	private boolean recent;
-
+	private String comments_id;
+	private String recent;
 }

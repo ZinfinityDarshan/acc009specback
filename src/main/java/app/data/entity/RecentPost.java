@@ -1,26 +1,26 @@
 package app.data.entity;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import app.data.entity.TrendingPost.TrendingPostBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Document(collection="post")
+@Document(collection="recentposts")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Post {
-	
-	@Id private String id;
+public class RecentPost {
+
+@Id private String id;
 	
 	private String postId;
 	
@@ -52,9 +52,7 @@ public class Post {
 	
 	//connecting Likes.id
 	private String likes_id;
-	
 	//connecting Comments.id
-	private List<String> comments_ids;
-	private boolean recent;
-
+	private String comments_id;
+	private String recent;
 }

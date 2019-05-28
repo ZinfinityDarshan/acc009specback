@@ -137,17 +137,21 @@ public class ProfileController {
 	}
 	
 	@PostMapping("followUser") public FollowUserResponse followUser(FollowUserRequest req) {
-		FollowUserResponse res = FollowUserResponse.builder().build();
 		if(req != null) {
 			try {
-				profileservice.followUser(req.getFollower(), req.getFollowing());
+				if(profileservice.followUser(req.getFollower(), req.getFollowing())==true) {
+					return FollowUserResponse.builder().status(true).userId(req.getFollower()).build();
+				}else {
+					return FollowUserResponse.builder().errorCode(ErrorConstants.InternalError).
+							errorMessage("internal error ").status(false).build();
+				}
 			}catch (Exception e) {
-				
+				return FollowUserResponse.builder().errorCode(ErrorConstants.InternalError).
+						errorMessage(e.getLocalizedMessage()).status(false).build();
 			}
 		}else {
-			res.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("input is not valid").status(false).build();
+			return FollowUserResponse.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("input is not valid").status(false).build();
 		}
-		return res;
 	}
 	
 	@PostMapping("updateProfile") public HttpStandardResponse updateProfile(Profile p){
@@ -159,18 +163,17 @@ public class ProfileController {
 					modelmapp.map(p, preq);
 					
 					profilerepo.save(preq).block();
-					res.builder().status(true).userId(preq.getUserId()).build();
+					return HttpStandardResponse.builder().status(true).userId(preq.getUserId()).build();
 					
 				}catch (MappingException e) {
-					res.builder().status(false).errorCode(ErrorConstants.InternalError).errorMessage("Internal Error Contact Support").build();
+					return HttpStandardResponse.builder().status(false).errorCode(ErrorConstants.InternalError).errorMessage("Internal Error Contact Support").build();
 				}
 				catch (Exception e) {
-					res.builder().status(false).errorCode(ErrorConstants.mappingError).errorMessage("Mapping Exception").build();
+					return HttpStandardResponse.builder().status(false).errorCode(ErrorConstants.mappingError).errorMessage("Mapping Exception").build();
 				}				
 		}else{
-			res.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("Input is Either Null or Not Compatible").status(false).build();
+			return HttpStandardResponse.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("Input is Either Null or Not Compatible").status(false).build();
 		}
-		return res;
 	}
 	
 	@GetMapping("getProfile/{userId}") public ProfileResponse getProfile(@PathVariable String userId){
@@ -180,27 +183,26 @@ public class ProfileController {
 				modelmapp.map(profilerepo.getByUserId(userId).block(), res);
 				res.setStatus(true);
 			}catch (Exception e) {
-				res.builder().status(false).errorCode(ErrorConstants.InternalError).errorMessage("Internal Error Contact Support").build();
+				return ProfileResponse.builder().status(false).errorCode(ErrorConstants.InternalError).errorMessage("Internal Error Contact Support").build();
 			}
 		}else {
-			res.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("Input is Either Null or Not Compatible").status(false).build();
+			return ProfileResponse.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("Input is Either Null or Not Compatible").status(false).build();
 		}
 		return res;
 	}
 	
 	@GetMapping("getNotificationForUser/{userId}") public NotificationResponse getNotificationsForUser(@PathVariable String userId) {
-		NotificationResponse res = NotificationResponse.builder().build();
 		if(userId!= null){
 			try {
-				 res.setNotifications(notificationrepo.findAllByUserId(userId).collectList().block()); 
-				 res.setStatus(true);
+				return NotificationResponse.builder().notifications(notificationrepo.findAllByUserId(userId).collectList().block())
+				.status(true).build();
+
 			}catch (Exception e) {
-				res.builder().status(false).errorCode(ErrorConstants.InternalError).errorMessage("Internal Error Contact Support").build();
+				return NotificationResponse.builder().status(false).errorCode(ErrorConstants.InternalError).errorMessage("Internal Error Contact Support").build();
 			}
 		}else {
-			res.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("Input is Either Null or Not Compatible").status(false).build();
+			return NotificationResponse.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("Input is Either Null or Not Compatible").status(false).build();
 		}
-		return res;
 	}
 	
 }
