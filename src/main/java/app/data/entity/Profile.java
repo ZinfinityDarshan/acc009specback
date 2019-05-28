@@ -24,6 +24,7 @@ public class Profile {
 	private String profile_id;
 	private String f_name;
 	private String l_name;
+	private String username;
 	private String createdBy;
 	private LocalDateTime createdOn;
 	private String updatedBy;
