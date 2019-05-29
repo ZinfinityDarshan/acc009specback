@@ -13,4 +13,7 @@ public interface RecentPostReactRepo extends ReactiveCrudRepository<RecentPost, 
 	public Mono<RecentPost> findByPostId(String postId);
 	
 	public Flux<RecentPost> findAll();
+	
+	@Query("{'user_Id': ?0}")
+	public Flux<RecentPost> findAllByUserId(String userId);
 }

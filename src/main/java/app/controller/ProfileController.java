@@ -156,7 +156,7 @@ public class ProfileController {
 	
 	@PostMapping("updateProfile") public HttpStandardResponse updateProfile(Profile p){
 		HttpStandardResponse res = HttpStandardResponse.builder().build();
-		if(p!=null) {
+		if(p!=null && p.getUserId()!=null || p.getUserId()=="") {
 				try {
 					
 					Profile preq = profilerepo.getByUserId(p.getUserId()).block();

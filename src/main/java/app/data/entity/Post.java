@@ -28,6 +28,8 @@ public class Post {
 	//connecting user.id
 	@Indexed
 	private String user_Id;
+	private String profilepicurl;
+	private String username;
 	
 	private String title;
 	private String dscp;
