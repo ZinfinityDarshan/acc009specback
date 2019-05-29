@@ -2,11 +2,15 @@ package app.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +21,13 @@ import app.constants.ErrorConstants;
 import app.data.entity.Likes;
 import app.data.entity.Post;
 import app.data.entity.RecentPost;
+import app.data.entity.User;
 import app.data.repository.reactive.CommentsRepoReact;
 import app.data.repository.reactive.LikesReactRepo;
 import app.data.repository.reactive.PostRepoReact;
 import app.data.repository.reactive.RecentPostReactRepo;
 import app.data.repository.reactive.TrendingPostRepoReact;
+import app.http.model.requests.GetSinglePostRequest;
 import app.http.model.responses.PostAddedResponse;
 import app.utility.DateTimeUtility;
 import app.utility.IdGeneratorUtility;
@@ -138,6 +144,31 @@ public class Postcontroller {
     
     @GetMapping("getAllPosts") public Flux<Post> getAllPosts(){
     	return postrepo.findAll();
+    }
+    
+    @PostMapping("getSinglePost") public Mono<Post> getSinglePost(@RequestBody GetSinglePostRequest req) {
+    	if(req.getPostId()!=null && req.getRequester()!=null) {
+    		try {
+		    	Post p1 = postrepo.findByPostId(req.getPostId()).block();
+		//    	List<String> l1 = likesrepo.findById(p1.getLikes_id()).block().getLikedBy();
+		    	if(likesrepo.findById(p1.getLikes_id()).block().getLikedBy()!=null) {
+			    	if(likesrepo.findById(p1.getLikes_id()).block().getLikedBy()
+			    			.parallelStream().anyMatch(userId -> userId==req.getRequester())) {
+			    		p1.setLikedByRequester(true);
+			    	}else {
+						p1.setLikedByRequester(false);
+					}
+		    	}else {
+		    		p1.setLikedByRequester(false);
+		    	}
+		    	return Mono.just(p1);
+    		}catch(Exception e){
+        		return Mono.just(Post.builder().postId(e.getMessage()).build());
+    		}
+    	}else {
+    		System.out.println("request null");
+    		return Mono.just(Post.builder().postId(null).build());
+    	}
     }
     
 }

@@ -31,4 +31,5 @@ public class AdminController {
 	@GetMapping("getUsers") public List<User> getUsers() {
 		return userrepo.findAll();
 	}
+	
 }

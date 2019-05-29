@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -56,5 +57,8 @@ public class Post {
 	//connecting Comments.id
 	private List<String> comments_ids;
 	private boolean recent;
+	
+	@Transient
+	private boolean likedByRequester;
 
 }
