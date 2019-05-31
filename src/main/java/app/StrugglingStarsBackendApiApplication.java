@@ -21,8 +21,4 @@ public class StrugglingStarsBackendApiApplication {
 	    return new ModelMapper();
 	  }
 	  
-	  @Bean
-	  public CorsFilter corsfilter() {
-		  return new CorsFilter();
-	  }
 }
