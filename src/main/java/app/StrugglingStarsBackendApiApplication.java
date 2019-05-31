@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import app.config.CorsFilter;
+
 @SpringBootApplication
 @EnableScheduling
 public class StrugglingStarsBackendApiApplication {
@@ -17,5 +19,10 @@ public class StrugglingStarsBackendApiApplication {
 	  @Bean
 	  public ModelMapper modelMapper() {
 	    return new ModelMapper();
+	  }
+	  
+	  @Bean
+	  public CorsFilter corsfilter() {
+		  return new CorsFilter();
 	  }
 }
