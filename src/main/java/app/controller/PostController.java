@@ -250,7 +250,7 @@ public class PostController {
 		    		post.setComments_ids(Arrays.asList(comm.getId()));
 		    		post.setCommentsCount(String.valueOf(Integer.parseInt(post.getCommentsCount()+1)));
 		    		postrepo.save(post).block();
-		    		
+		    		recentpostrepo.save(mapper.map(post, RecentPost.class)).block();
 		    		return PostCommentForPostResponse.builder().status(true).comments(comm).build();
     		}catch (Exception e) {
     			e.printStackTrace();
