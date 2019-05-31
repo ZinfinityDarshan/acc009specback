@@ -44,10 +44,10 @@ import app.http.model.responses.PostCommentForPostResponse;
 import app.utility.DateTimeUtility;
 import app.utility.IdGeneratorUtility;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/secure/post")
 @Slf4j
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PostController {
     
     @Autowired private PostRepoReact postrepo;
@@ -97,6 +97,7 @@ public class PostController {
      */
     
     //@SuppressWarnings("static-access")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("addOrUpdatePost")
 	public PostAddedResponse addPost(@RequestBody Post post1) {
     	Profile profile = new Profile();
