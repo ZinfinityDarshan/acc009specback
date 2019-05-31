@@ -80,7 +80,7 @@ public class UserService {
 
   public String signup(User user) {
 	  try {
-		    if (!commondao.userExistbyUsername(user.getUsername()) && commondao.userExistbyEmail(user.getEmail())) {
+		    if (!commondao.userExistbyUsername(user.getUsername()) && !commondao.userExistbyEmail(user.getEmail())) {
 		      user.setPassword(passwordEncoder.encode(user.getPassword()));
 		      if(user.getRoles()==null) {
 		    	  List<Role> roles = new ArrayList<Role>();
