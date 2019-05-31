@@ -122,6 +122,8 @@ public class PostController {
 	    		post1.setRecent(true);
 	    		post1.setUsername(profile.getUsername());
 	    		post1.setProfilepicurl(profile.getProfilePicUrl());
+	    		post1.setLikesCount("0");
+	    		post1.setCommentsCount("0");
 	    		postrepo.save(post1).block();
 	    		recentpostrepo.save(mapper.map(post1, RecentPost.class)).block();
 	    		return PostAddedResponse.builder().status(true).userId(post1.getUser_Id()).postId(postId).build();
