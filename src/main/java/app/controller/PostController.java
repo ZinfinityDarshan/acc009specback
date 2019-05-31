@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.constants.DataBaseConstants;
@@ -235,7 +236,7 @@ public class PostController {
     	}
     }
     
-    @PostMapping("postCommentForPost") public PostCommentForPostResponse postCommentForPost(PostCommentForPostRequest req) {
+    @PostMapping("postCommentForPost") public PostCommentForPostResponse postCommentForPost(@RequestBody PostCommentForPostRequest req) {
     	if(req.getPostId()!=null || req.getPostId()!="" && req.getRequester()!=null || req.getRequester()!="") {
     		try {
 		    		Post post = postrepo.findByPostId(req.getPostId()).block();
@@ -243,12 +244,14 @@ public class PostController {
 		    		Comments comm = commentsrepo.save(Comments.builder().comment(req.getComment()).commentedBy(req.getRequester())
 		    				.commentedByProfilePicUrl(p.getProfilePicUrl()).commentedOn(datetime.getNow())
 		    				.commentedByusername(p.getUsername()).postID(req.getPostId()).build()).block();
+		    		System.out.println(comm.toString());
 		    		post.setComments_ids(Arrays.asList(comm.getId()));
 		    		post.setCommentsCount(String.valueOf(Integer.parseInt(post.getCommentsCount()+1)));
 		    		postrepo.save(post).block();
 		    		
 		    		return PostCommentForPostResponse.builder().status(true).comments(comm).build();
     		}catch (Exception e) {
+    			e.printStackTrace();
     			return PostCommentForPostResponse.builder().status(false).errorCode(ErrorConstants.InternalError)
         				.errorMessage(e.getMessage()).build();
 			}

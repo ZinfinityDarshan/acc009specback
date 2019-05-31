@@ -36,6 +36,7 @@ import app.http.model.responses.FollowUserResponse;
 import app.http.model.responses.HttpStandardResponse;
 import app.http.model.responses.NotificationResponse;
 import app.http.model.responses.ProfileResponse;
+import app.http.model.responses.TagsForUserResponse;
 import app.service.ProfileService;
 import app.utility.DateTimeUtility;
 import app.utility.IdGeneratorUtility;
@@ -203,6 +204,10 @@ public class ProfileController {
 		}else {
 			return NotificationResponse.builder().errorCode(ErrorConstants.InputNotValid).errorMessage("Input is Either Null or Not Compatible").status(false).build();
 		}
+	}
+	
+	@GetMapping("getTagsForUser") public TagsForUserResponse getTagsForUser() {
+		
 	}
 	
 }
