@@ -79,6 +79,7 @@ public class GenericDAO {
 	public Flux<RecentPost> getRecentPosts(){
 		Query q = new Query();
 		q.addCriteria(Criteria.where("img").ne(""));
+		q.addCriteria(Criteria.where("img").ne(null));
 		q.with(new Sort(Sort.Direction.DESC, "updatedOn"));
 		return Flux.fromStream(dbtemplate.find(q, RecentPost.class).stream());
 	}
