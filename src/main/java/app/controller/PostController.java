@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app.constants.DataBaseConstants;
 import app.constants.ErrorConstants;
+import app.data.dao.GenericDAO;
 import app.data.entity.Comments;
 import app.data.entity.Likes;
 import app.data.entity.Post;
@@ -59,6 +60,7 @@ public class PostController {
     @Autowired private ModelMapper mapper;
     @Autowired private DateTimeUtility datetime;   
     @Autowired private ProfileRepoReact profilerepo;
+    @Autowired private GenericDAO dao;
     
     
     /*
@@ -258,6 +260,10 @@ public class PostController {
 
     @GetMapping("getListOfCommentersForPost") public ListOfCommentersForPostResponse getListOfCommentersForPost() {
     	return null;
+    }
+    
+    @GetMapping("getHomePagePosts") public Flux<RecentPost> getHomePagePosts(){
+    	return dao.getRecentPosts();
     }
     
     
