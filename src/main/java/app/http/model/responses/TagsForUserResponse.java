@@ -13,6 +13,6 @@ import lombok.experimental.SuperBuilder;
 @Data@AllArgsConstructor@NoArgsConstructor@JsonFormat@SuperBuilder
 public class TagsForUserResponse extends HttpStandardResponse{
 
-	private List<Subject> tags;
+	private List<String> tags;
 	private String username;
 }

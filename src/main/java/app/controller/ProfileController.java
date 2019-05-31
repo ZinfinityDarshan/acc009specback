@@ -206,8 +206,12 @@ public class ProfileController {
 		}
 	}
 	
-	@GetMapping("getTagsForUser") public TagsForUserResponse getTagsForUser() {
-		
+	@GetMapping("getTagsForUser/{userId}") public TagsForUserResponse getTagsForUser(@PathVariable String userId) {
+		try {
+			return TagsForUserResponse.builder().tags(subrepo.getByUserId(userId).block().getSubjects()).userId(userId).status(true).build();
+		}catch (Exception e) {
+			return TagsForUserResponse.builder().errorCode(ErrorConstants.InternalError).status(false).build();
+		}
 	}
 	
 }
