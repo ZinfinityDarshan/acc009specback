@@ -93,8 +93,9 @@ public class ProfileController {
 		return idcrepo.findAll();
 	}
 	
-	@PostMapping("addSubjectsToProfile") public AddSubjectToProfileResponse addSubjectsToProfile(AddSubjectsToProfileRequest req){
+	@PostMapping("addSubjectsToProfile") public AddSubjectToProfileResponse addSubjectsToProfile(@RequestBody AddSubjectsToProfileRequest req){
 		AddSubjectToProfileResponse res = new AddSubjectToProfileResponse();
+		
 		if(userrepo.findById(req.getUserId()) != null ) {
 			try {
 				
