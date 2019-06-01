@@ -33,6 +33,8 @@ public class RecentPost {
 	
 	//either img, vid or art
 	private String type;
+	private String profilepicurl;
+	private String username;
 	
 	//Below Fields will connect Firestore to store images and videos
 	//GCP/Firestore Connect
