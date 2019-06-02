@@ -34,6 +34,7 @@ import app.generic.model.ShortProfile;
 import app.http.model.requests.AddProfilePicRequest;
 import app.http.model.requests.AddSubjectsToProfileRequest;
 import app.http.model.requests.FollowUserRequest;
+import app.http.model.responses.AddProfilePicResponse;
 import app.http.model.responses.AddSubjectToProfileResponse;
 import app.http.model.responses.FollowUserResponse;
 import app.http.model.responses.HttpStandardResponse;
@@ -237,19 +238,19 @@ public class ProfileController {
 		return subconrepo.findAll();
 	}
 	
-	@PostMapping("addProfilePic") public String addProfilePic(@RequestBody AddProfilePicRequest req) {
+	@PostMapping("addProfilePic") public AddProfilePicResponse addProfilePic(@RequestBody AddProfilePicRequest req) {
 		if(req.getUserId() != null && req.getPicurl() !=null) {
 			try {
 			Profile p = profilerepo.getByUserId(req.getUserId()).block();
 			p.setProfilePicUrl(req.getPicurl());
 			p = profilerepo.save(p).block();
-			return p.getUserId();
+			return AddProfilePicResponse.builder().userId(p.getUserId()).status(true).build();
 			}catch(Exception e){
 				e.printStackTrace();
-				return e.getMessage();
+				return AddProfilePicResponse.builder().status(false).build();
 			}
 		}else {
-			return "null";
+			return AddProfilePicResponse.builder().status(false).build();
 		}
 	}
 	
