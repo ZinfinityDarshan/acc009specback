@@ -113,7 +113,8 @@ public class UserService {
 		      usercontactrepo.save(c).block();
 		      return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
 		    } else {
-		      throw new CustomException("Username/ Email is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+		    	return ErrorConstants.EmailOrUsernameInUse;
+		     // throw new CustomException("Username/ Email is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
 		    }
 	  }catch (Exception e) {
 		 return ErrorConstants.InternalError; 
