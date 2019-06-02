@@ -34,11 +34,10 @@ import io.swagger.annotations.ApiResponses;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/users")
 @Api(tags = "users")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
 
   @Autowired
