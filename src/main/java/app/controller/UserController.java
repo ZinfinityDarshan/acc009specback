@@ -125,8 +125,13 @@ public class UserController {
 
   @GetMapping("/refresh")
   @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
-  public String refresh(HttpServletRequest req) {
-    return userService.refresh(req.getRemoteUser());
+  public SecureLoginResponse refresh(HttpServletRequest req) {
+	  String token = userService.refresh(req.getRemoteUser());
+	  if( token !=null) {
+		  	return SecureLoginResponse.builder().status(true).token(token).build();
+	  }else {
+		  return SecureLoginResponse.builder().status(false).build();
+	  }
   }
   
   @GetMapping("/getAllUsers")
