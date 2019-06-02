@@ -236,4 +236,20 @@ public class ProfileController {
 		return subconrepo.findAll();
 	}
 	
+	@PostMapping("addProfilePic/{userId}/{picurl}") public String addProfilePic(@PathVariable String userId, @PathVariable String picurl) {
+		if(userId != null && picurl !=null) {
+			try {
+			Profile p = profilerepo.getByUserId(userId).block();
+			p.setProfilePicUrl(picurl);
+			p = profilerepo.save(p).block();
+			return p.getUserId();
+			}catch(Exception e){
+				e.printStackTrace();
+				return e.getMessage();
+			}
+		}else {
+			return "null";
+		}
+	}
+	
 }
