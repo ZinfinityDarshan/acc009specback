@@ -31,6 +31,7 @@ import app.data.repository.reactive.ProfileRepoReact;
 import app.data.repository.reactive.SubjectConstantRepoReact;
 import app.data.repository.reactive.SubjectReactRepo;
 import app.generic.model.ShortProfile;
+import app.http.model.requests.AddProfilePicRequest;
 import app.http.model.requests.AddSubjectsToProfileRequest;
 import app.http.model.requests.FollowUserRequest;
 import app.http.model.responses.AddSubjectToProfileResponse;
@@ -236,11 +237,11 @@ public class ProfileController {
 		return subconrepo.findAll();
 	}
 	
-	@PostMapping("addProfilePic/{userId}/{picurl}") public String addProfilePic(@PathVariable String userId, @PathVariable String picurl) {
-		if(userId != null && picurl !=null) {
+	@PostMapping("addProfilePic") public String addProfilePic(@RequestBody AddProfilePicRequest req) {
+		if(req.getUserId() != null && req.getPicurl() !=null) {
 			try {
-			Profile p = profilerepo.getByUserId(userId).block();
-			p.setProfilePicUrl(picurl);
+			Profile p = profilerepo.getByUserId(req.getUserId()).block();
+			p.setProfilePicUrl(req.getPicurl());
 			p = profilerepo.save(p).block();
 			return p.getUserId();
 			}catch(Exception e){
