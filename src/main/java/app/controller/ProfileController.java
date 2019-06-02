@@ -228,8 +228,8 @@ public class ProfileController {
 		return Flux.fromStream(shortprofiles.stream());
 	}
 	
-	@GetMapping("getAllTags") public Flux<Subject> gatAllTags(){
-		return subrepo.findAll();
+	@GetMapping("getAllTags") public Flux<SubjectConstant> gatAllTags(){
+		return subconrepo.findAll();
 	}
 	
 }
