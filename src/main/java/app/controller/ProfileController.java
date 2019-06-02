@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app.constants.DataBaseConstants;
 import app.constants.ErrorConstants;
+import app.data.dao.GenericDAO;
 import app.data.entity.IDConfiguration;
 import app.data.entity.Profile;
 import app.data.entity.Subject;
@@ -29,6 +30,7 @@ import app.data.repository.reactive.NotificationRepoReact;
 import app.data.repository.reactive.ProfileRepoReact;
 import app.data.repository.reactive.SubjectConstantRepoReact;
 import app.data.repository.reactive.SubjectReactRepo;
+import app.generic.model.ShortProfile;
 import app.http.model.requests.AddSubjectsToProfileRequest;
 import app.http.model.requests.FollowUserRequest;
 import app.http.model.responses.AddSubjectToProfileResponse;
@@ -61,6 +63,7 @@ public class ProfileController {
 	@Autowired private FollowingRepoReact followingrepo;
 	@Autowired private ModelMapper modelmapp;
 	@Autowired private NotificationRepoReact notificationrepo;
+	@Autowired private GenericDAO dao;
 
 	
 	@GetMapping("hi")
@@ -213,6 +216,20 @@ public class ProfileController {
 		}catch (Exception e) {
 			return TagsForUserResponse.builder().errorCode(ErrorConstants.InternalError).status(false).build();
 		}
+	}
+	
+	@GetMapping("searchProfiles/{match}") public Flux<ShortProfile> searchProfiles(@PathVariable String match){
+		List<ShortProfile> shortprofiles = new ArrayList<ShortProfile>();
+		List<Profile> p = dao.searchForProfile(match).collectList().block();
+		p.forEach(data -> {
+			shortprofiles.add(ShortProfile.builder().userId(data.getUserId()).profilepicurl(data.getProfilePicUrl())
+					.username(data.getUsername()).build());
+		});
+		return Flux.fromStream(shortprofiles.stream());
+	}
+	
+	@GetMapping("getAllTags") public Flux<Subject> gatAllTags(){
+		return subrepo.findAll();
 	}
 	
 }
