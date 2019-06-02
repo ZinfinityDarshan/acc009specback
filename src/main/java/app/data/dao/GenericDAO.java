@@ -86,7 +86,7 @@ public class GenericDAO {
 	
 	public Flux<Profile> searchForProfile(String match){
 		Query q = new Query();
-		q.addCriteria(Criteria.where("username").regex(match));
+		q.addCriteria(Criteria.where("username").regex(match, "i"));
 		q.limit(10);
 		return Flux.fromStream(dbtemplate.find(q, Profile.class).stream());
 	}

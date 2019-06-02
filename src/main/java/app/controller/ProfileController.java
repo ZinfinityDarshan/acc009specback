@@ -219,6 +219,7 @@ public class ProfileController {
 	}
 	
 	@GetMapping("searchProfiles/{match}") public Flux<ShortProfile> searchProfiles(@PathVariable String match){
+		if(match!="" && match!=" ") {
 		List<ShortProfile> shortprofiles = new ArrayList<ShortProfile>();
 		List<Profile> p = dao.searchForProfile(match).collectList().block();
 		p.forEach(data -> {
@@ -226,6 +227,9 @@ public class ProfileController {
 					.username(data.getUsername()).build());
 		});
 		return Flux.fromStream(shortprofiles.stream());
+		}else {
+			return null;
+		}
 	}
 	
 	@GetMapping("getAllTags") public Flux<SubjectConstant> gatAllTags(){
