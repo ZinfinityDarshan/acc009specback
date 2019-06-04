@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
@@ -61,5 +62,8 @@ public class Profile {
 	private List<String> notifications;
 	
 	private List<String> activity;
+	
+	@Transient
+	private boolean followedbool;
 	
 }

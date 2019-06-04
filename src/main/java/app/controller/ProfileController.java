@@ -185,9 +185,15 @@ public class ProfileController {
 	
 	@GetMapping("getProfile/{userId}") public ProfileResponse getProfile(@PathVariable String userId){
 		ProfileResponse res = ProfileResponse.builder().build();
+		res.setFollowedbool(false);
 		if(userId!= null){
 			try {
 				modelmapp.map(profilerepo.getByUserId(userId).block(), res);
+				followerrepo.findByUserId(userId).block().getFollowers().stream().forEach(data -> {
+					if(data == userId) {
+						res.setFollowedbool(true);
+					}
+				});
 				res.setStatus(true);
 			}catch (Exception e) {
 				return ProfileResponse.builder().status(false).errorCode(ErrorConstants.InternalError).errorMessage("Internal Error Contact Support").build();

@@ -3,6 +3,7 @@ package app.http.model.responses;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 
 import lombok.AllArgsConstructor;
@@ -58,4 +59,7 @@ public class ProfileResponse extends HttpStandardResponse{
 	private List<String> notifications;
 	
 	private List<String> activity;
+	
+	@Transient
+	private boolean followedbool;
 }

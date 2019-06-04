@@ -122,8 +122,8 @@ public class PostController {
 	    		post1.setRecent(true);
 	    		post1.setUsername(profile.getUsername());
 	    		post1.setProfilepicurl(profile.getProfilePicUrl());
-	    		post1.setLikesCount("0");
-	    		post1.setCommentsCount("0");
+	    		post1.setLikesCount(0);
+	    		post1.setCommentsCount(0);
 	    		profile.setPostCount(String.valueOf(Integer.parseInt(profile.getPostCount())));
 	    		postrepo.save(post1).block();
 	    		recentpostrepo.save(mapper.map(post1, RecentPost.class)).block();
@@ -202,8 +202,8 @@ public class PostController {
     			Likes likes = likesrepo.getLikesByPostId(req.getPostId()).block();
     			Post post = postrepo.findByPostId(req.getPostId()).block();
     			likes.setLikedBy(Arrays.asList(req.getUserId()));
-    			likes.setLikeCount(String.valueOf(Integer.parseInt(likes.getLikeCount()+1)));
-    			post.setLikesCount(String.valueOf(Integer.parseInt(post.getLikesCount()+1)));
+    			likes.setLikeCount(String.valueOf(likes.getLikeCount()+1));
+    			post.setLikesCount(post.getLikesCount()+1);
     			String likescount = likesrepo.save(likes).block().getLikeCount();
     			postrepo.save(post).block();
     			return LikePostResponse.builder().status(true).likecount(likescount).requester(req.getUserId()).build();
@@ -249,7 +249,7 @@ public class PostController {
 		    				.commentedByusername(p.getUsername()).postID(req.getPostId()).build()).block();
 		    		System.out.println(comm.toString());
 		    		post.setComments_ids(Arrays.asList(comm.getId()));
-		    		post.setCommentsCount(String.valueOf(Integer.parseInt(post.getCommentsCount()+1)));
+		    		post.setCommentsCount(post.getCommentsCount()+1);
 		    		postrepo.save(post).block();
 		    		recentpostrepo.save(mapper.map(post, RecentPost.class)).block();
 		    		return PostCommentForPostResponse.builder().status(true).comments(comm).build();
