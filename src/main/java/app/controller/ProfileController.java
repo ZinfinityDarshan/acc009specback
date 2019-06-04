@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import app.constants.DataBaseConstants;
 import app.constants.ErrorConstants;
 import app.data.dao.GenericDAO;
+import app.data.entity.Followers;
 import app.data.entity.IDConfiguration;
 import app.data.entity.Profile;
 import app.data.entity.Subject;
@@ -34,6 +35,7 @@ import app.generic.model.ShortProfile;
 import app.http.model.requests.AddProfilePicRequest;
 import app.http.model.requests.AddSubjectsToProfileRequest;
 import app.http.model.requests.FollowUserRequest;
+import app.http.model.requests.TrggerNotificationRequest;
 import app.http.model.responses.AddProfilePicResponse;
 import app.http.model.responses.AddSubjectToProfileResponse;
 import app.http.model.responses.FollowUserResponse;
@@ -41,6 +43,7 @@ import app.http.model.responses.HttpStandardResponse;
 import app.http.model.responses.NotificationResponse;
 import app.http.model.responses.ProfileResponse;
 import app.http.model.responses.TagsForUserResponse;
+import app.http.model.responses.TriggerNotificationResponse;
 import app.service.ProfileService;
 import app.utility.DateTimeUtility;
 import app.utility.IdGeneratorUtility;
@@ -143,7 +146,7 @@ public class ProfileController {
 		return timeutil.getNow();
 	}
 	
-	@PostMapping("followUser") public FollowUserResponse followUser(FollowUserRequest req) {
+	@PostMapping("followUser") public FollowUserResponse followUser(@RequestBody FollowUserRequest req) {
 		if(req != null) {
 			try {
 				if(profileservice.followUser(req.getFollower(), req.getFollowing())==true) {
@@ -161,7 +164,7 @@ public class ProfileController {
 		}
 	}
 	
-	@PostMapping("updateProfile") public HttpStandardResponse updateProfile(Profile p){
+	@PostMapping("updateProfile") public HttpStandardResponse updateProfile(@RequestBody Profile p){
 		HttpStandardResponse res = HttpStandardResponse.builder().build();
 		if(p!=null && p.getUserId()!=null || p.getUserId()=="") {
 				try {
@@ -189,11 +192,18 @@ public class ProfileController {
 		if(userId!= null){
 			try {
 				modelmapp.map(profilerepo.getByUserId(userId).block(), res);
-				followerrepo.findByUserId(userId).block().getFollowers().stream().forEach(data -> {
+				Followers f = followerrepo.findByUserId(userId).block();
+				if(f.getFollowers() != null) {
+				f.getFollowers().stream().forEach(data -> {
 					if(data == userId) {
 						res.setFollowedbool(true);
+					}if(data == null) {
+						res.setFollowedbool(false);
 					}
-				});
+				  });
+				}else {
+					res.setFollowedbool(false);
+				}
 				res.setStatus(true);
 			}catch (Exception e) {
 				return ProfileResponse.builder().status(false).errorCode(ErrorConstants.InternalError).errorMessage("Internal Error Contact Support").build();
@@ -258,6 +268,9 @@ public class ProfileController {
 		}else {
 			return AddProfilePicResponse.builder().status(false).build();
 		}
+	}
+	@PostMapping("triggerNotification") public TriggerNotificationResponse triggerNotification(@RequestBody TrggerNotificationRequest req) {
+		return null;
 	}
 	
 }
