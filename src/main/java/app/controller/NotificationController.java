@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(value = "/secure/notification")
 @Slf4j
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class NotificationController {
 
 }

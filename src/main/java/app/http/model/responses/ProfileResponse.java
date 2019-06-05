@@ -21,6 +21,7 @@ public class ProfileResponse extends HttpStandardResponse{
 
 	private String id;
 	private String profile_id;
+	private String username;
 	private String f_name;
 	private String l_name;
 	private String createdBy;

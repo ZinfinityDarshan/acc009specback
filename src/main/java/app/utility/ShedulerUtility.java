@@ -16,7 +16,7 @@ public class ShedulerUtility {
 	@Autowired GenericDAO dao;
 	
 
-	@Scheduled(fixedDelay = 10000)
+	@Scheduled(fixedDelay = 3600000)
 	private void TrendingFeedScheduler() {
 		dao.sortTrendingPosts().subscribe(data ->{
 			trendingrepo.save(data).block();

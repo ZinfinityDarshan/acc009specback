@@ -95,14 +95,21 @@ public class GenericDAO {
 	}
 	
 	public Flux<TrendingPost> sortTrendingPosts(){
+		try
+		{
 		Query q = new Query();
 		List<TrendingPost> trp = new ArrayList<TrendingPost>();
 		q.with(new Sort(Sort.Direction.DESC, "likesCount"));
 		q.limit(100);
-		dbtemplate.find(q, Post.class).parallelStream().forEach(post ->{
+		dbtemplate.find(q, Post.class).parallelStream().filter(value -> value!=null).forEach(post ->{
 			trp.add(mapper.map(post, TrendingPost.class));
 		});
-		return Flux.fromStream(trp.stream());
-		
+		trp.removeIf(data -> data == null);
+		System.out.println("values"+trp);
+		return Flux.fromArray((trp.toArray(new TrendingPost[0])));
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

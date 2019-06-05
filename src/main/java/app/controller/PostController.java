@@ -201,6 +201,8 @@ public class PostController {
     		try {
     			Likes likes = likesrepo.getLikesByPostId(req.getPostId()).block();
     			Post post = postrepo.findByPostId(req.getPostId()).block();
+    			String notifier = post.getUser_Id();
+    			//triggerNotification here
     			likes.setLikedBy(Arrays.asList(req.getUserId()));
     			likes.setLikeCount(String.valueOf(likes.getLikeCount()+1));
     			post.setLikesCount(post.getLikesCount()+1);
@@ -250,6 +252,8 @@ public class PostController {
 		    		System.out.println(comm.toString());
 		    		post.setComments_ids(Arrays.asList(comm.getId()));
 		    		post.setCommentsCount(post.getCommentsCount()+1);
+		    		String notifier = post.getUser_Id();
+		    		//triggerNotification here
 		    		postrepo.save(post).block();
 		    		recentpostrepo.save(mapper.map(post, RecentPost.class)).block();
 		    		return PostCommentForPostResponse.builder().status(true).comments(comm).build();
