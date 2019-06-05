@@ -10,5 +10,6 @@ public class LikePostRequest {
 
 	private String postId;
 	private String userId;
+	private String requester;
 	
 }

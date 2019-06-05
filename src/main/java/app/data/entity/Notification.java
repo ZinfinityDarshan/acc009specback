@@ -28,5 +28,9 @@ public class Notification {
 	
 	//user Id of the user who notified 
 	private String notifiedBy;
+	private String notifiedByprofilepicurl;
+	private String notifiedByusername;
+	private String postImageOrVidfirstUrl;
+	private String postId;
 
 }

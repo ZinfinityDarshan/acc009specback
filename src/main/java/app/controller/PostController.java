@@ -211,6 +211,13 @@ public class PostController {
     			post.setLikesCount(post.getLikesCount()+1);
     			String likescount = likesrepo.save(likes).block().getLikeCount();
     			postrepo.save(post).block();
+    			Profile p = profilerepo.getByUserId(req.getUserId()).block();
+    			boolean notificationstatus  = notificationservice.triggerNotification(Notification.builder().createdon(datetime.getNow()).notifiedBy(req.getRequester())
+	    				.userId(notifier).message(req.getRequester()+" is commented on your post").notifiedByprofilepicurl(p.getProfilePicUrl())
+	    				.notifiedByusername(p.getUsername()).postImageOrVidfirstUrl(post.getImg().get(0)).postId(post.getPostId()).build());
+	    		if (notificationstatus==false) {
+	    			log.info("Like Notification falied for post"+ post.getPostId()+ "was tried by requester" +p.getUserId());
+	    		}
     			return LikePostResponse.builder().status(true).likecount(likescount).requester(req.getUserId()).build();
     		}catch (Exception e) {
     			return LikePostResponse.builder().status(false).errorCode(ErrorConstants.InternalError)
@@ -258,9 +265,12 @@ public class PostController {
 		    		String notifier = post.getUser_Id();
 		    		
 		    		// Trigger notification
-		    		notificationservice.triggerNotification(Notification.builder().createdon(datetime.getNow()).notifiedBy(req.getRequester())
-		    				.userId(notifier).build());
-		    		
+		    		boolean notificationstatus  = notificationservice.triggerNotification(Notification.builder().createdon(datetime.getNow()).notifiedBy(req.getRequester())
+		    				.userId(notifier).message(req.getRequester()+" is commented on your post").notifiedByprofilepicurl(p.getProfilePicUrl())
+		    				.notifiedByusername(p.getUsername()).postImageOrVidfirstUrl(post.getImg().get(0)).postId(post.getPostId()).build());
+		    		if (notificationstatus==false) {
+		    			log.info("Comment Notification falied for post"+ post.getPostId()+ "was tried by requester" +p.getUserId());
+		    		}
 		    		postrepo.save(post).block();
 		    		recentpostrepo.save(mapper.map(post, RecentPost.class)).block();
 		    		return PostCommentForPostResponse.builder().status(true).comments(comm).build();
