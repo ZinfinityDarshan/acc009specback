@@ -46,8 +46,8 @@ public class TrendingPost {
 	private String updatedBy;
 	private LocalDateTime updatedOn;
 	@Indexed
-	private String likesCount;
-	private String commentsCount;
+	private int likesCount;
+	private int commentsCount;
 	
 	//connecting Likes.id
 	private String likes_id;

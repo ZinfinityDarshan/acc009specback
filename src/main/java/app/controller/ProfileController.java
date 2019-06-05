@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import app.constants.DataBaseConstants;
 import app.constants.ErrorConstants;
 import app.data.dao.GenericDAO;
 import app.data.entity.Followers;

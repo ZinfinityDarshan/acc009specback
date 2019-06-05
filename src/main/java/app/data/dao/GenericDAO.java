@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -20,6 +21,7 @@ import app.data.entity.Following;
 import app.data.entity.Post;
 import app.data.entity.Profile;
 import app.data.entity.RecentPost;
+import app.data.entity.TrendingPost;
 import app.data.repository.reactive.FollowersRepoReact;
 import app.data.repository.reactive.FollowingRepoReact;
 import app.data.repository.reactive.PostRepoReact;
@@ -38,6 +40,7 @@ public class GenericDAO {
 	@Autowired FollowingRepoReact followingrepo;
 	@Autowired FollowersRepoReact followerrepo;
 	@Autowired RecentPostReactRepo recentpostrepo;
+	@Autowired ModelMapper mapper;
 	
 	/*getHomePost(requester<userId>) - query recentposts
 	*    //Logic -
@@ -91,4 +94,15 @@ public class GenericDAO {
 		return Flux.fromStream(dbtemplate.find(q, Profile.class).stream());
 	}
 	
+	public Flux<TrendingPost> sortTrendingPosts(){
+		Query q = new Query();
+		List<TrendingPost> trp = new ArrayList<TrendingPost>();
+		q.with(new Sort(Sort.Direction.DESC, "likesCount"));
+		q.limit(100);
+		dbtemplate.find(q, Post.class).parallelStream().forEach(post ->{
+			trp.add(mapper.map(post, TrendingPost.class));
+		});
+		return Flux.fromStream(trp.stream());
+		
+	}
 }
