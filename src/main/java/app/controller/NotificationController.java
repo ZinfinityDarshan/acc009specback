@@ -3,6 +3,7 @@ package app.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +23,7 @@ public class NotificationController {
 	@Autowired GenericDAO dao;
 
 	@GetMapping("getNotifications/{userId}")
-	public Flux<Notification>getAllNotificationaforUser(String userId){
+	public Flux<Notification>getAllNotificationaforUser(@PathVariable String userId){
 		//return notificationrepo.findAllByUserId(userId);
 		return dao.getNotificationsForUser(userId);
 	}
