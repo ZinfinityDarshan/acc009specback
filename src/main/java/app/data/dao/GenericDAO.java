@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import app.data.entity.Following;
+import app.data.entity.Notification;
 import app.data.entity.Post;
 import app.data.entity.Profile;
 import app.data.entity.RecentPost;
@@ -111,5 +112,20 @@ public class GenericDAO {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public Flux<Notification> getNotificationsForUser(String userId){
+		Query q = new Query();
+		q.addCriteria(Criteria.where("userId").is(userId));
+		q.limit(50);
+		q.with(new Sort(Sort.Direction.DESC, "createdon"));
+		return Flux.fromStream(dbtemplate.find(q, Notification.class).stream());
+	}
+	
+	public Flux<Post> getPostForUser(String userId){
+		Query q = new Query();
+		q.addCriteria(Criteria.where("user_Id").is(userId));
+		q.with(new Sort(Sort.Direction.DESC, "updatedOn"));
+		return Flux.fromStream(dbtemplate.find(q, Post.class).stream());
 	}
 }

@@ -24,6 +24,7 @@ import app.constants.ErrorConstants;
 import app.data.dao.GenericDAO;
 import app.data.entity.Comments;
 import app.data.entity.Likes;
+import app.data.entity.Notification;
 import app.data.entity.Post;
 import app.data.entity.Profile;
 import app.data.entity.RecentPost;
@@ -43,6 +44,7 @@ import app.http.model.responses.ListOfCommentersForPostResponse;
 import app.http.model.responses.ListOfProfilesLikedPostResponse;
 import app.http.model.responses.PostAddedResponse;
 import app.http.model.responses.PostCommentForPostResponse;
+import app.service.NotificationService;
 import app.utility.DateTimeUtility;
 import app.utility.IdGeneratorUtility;
 
@@ -62,6 +64,7 @@ public class PostController {
     @Autowired private DateTimeUtility datetime;   
     @Autowired private ProfileRepoReact profilerepo;
     @Autowired private GenericDAO dao;
+    @Autowired private NotificationService notificationservice;
     
     
     /*
@@ -253,7 +256,11 @@ public class PostController {
 		    		post.setComments_ids(Arrays.asList(comm.getId()));
 		    		post.setCommentsCount(post.getCommentsCount()+1);
 		    		String notifier = post.getUser_Id();
-		    		//triggerNotification here
+		    		
+		    		// Trigger notification
+		    		notificationservice.triggerNotification(Notification.builder().createdon(datetime.getNow()).notifiedBy(req.getRequester())
+		    				.userId(notifier).build());
+		    		
 		    		postrepo.save(post).block();
 		    		recentpostrepo.save(mapper.map(post, RecentPost.class)).block();
 		    		return PostCommentForPostResponse.builder().status(true).comments(comm).build();
@@ -276,5 +283,13 @@ public class PostController {
     	return dao.getRecentPosts();
     }
     
+    @GetMapping("getAllPostsForUser/{userId}") public Flux<Post> getAllPostsForUser(@PathVariable String userId){
+    	if(userId != null && userId!="") {
+    		return dao.getPostForUser(userId);
+    	}
+    	else {
+    		return Flux.empty();
+    	}
+    }
     
 }
