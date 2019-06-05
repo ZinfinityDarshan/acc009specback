@@ -21,7 +21,7 @@ public class NotificationController {
 	@Autowired NotificationRepoReact notificationrepo;
 	@Autowired GenericDAO dao;
 
-	@GetMapping("getNotifications")
+	@GetMapping("getNotifications/{userId}")
 	public Flux<Notification>getAllNotificationaforUser(String userId){
 		//return notificationrepo.findAllByUserId(userId);
 		return dao.getNotificationsForUser(userId);
