@@ -36,7 +36,7 @@ public class Profile {
 	private String userId;
 	private String bio;
 	private List<String> awards;
-	private String postCount;
+	private int postCount;
 	private String followerCount;
 	private String followingcount;
 	private String recommendId;

@@ -105,7 +105,7 @@ public class UserService {
 		      
 		      Profile p = Profile.builder().userId(userId).createdOn(datetimeutil.getNow()).
 		    		  updatedDate(datetimeutil.getNow()).followers(f1id).following(f2id).followerCount("1").followingcount("1")
-		    		  .professsion(Arrays.asList(ProfessionConstants.Artist.toString())).username(user.getUsername()).postCount("0").build();
+		    		  .professsion(Arrays.asList(ProfessionConstants.Artist.toString())).username(user.getUsername()).postCount(0).build();
 		      
 		      UserContact c = UserContact.builder().mobile(user.getPhoneno()).email(user.getEmail())
 		    		  		  .userId(userId).build();

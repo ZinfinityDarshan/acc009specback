@@ -127,9 +127,10 @@ public class PostController {
 	    		post1.setProfilepicurl(profile.getProfilePicUrl());
 	    		post1.setLikesCount(0);
 	    		post1.setCommentsCount(0);
-	    		profile.setPostCount(String.valueOf(Integer.parseInt(profile.getPostCount())));
+	    		profile.setPostCount(profile.getPostCount()+1);
 	    		postrepo.save(post1).block();
 	    		recentpostrepo.save(mapper.map(post1, RecentPost.class)).block();
+	    		profilerepo.save(profile).block();
 	    		return PostAddedResponse.builder().status(true).userId(post1.getUser_Id()).postId(postId).build();
 	    	}catch(Exception e) {
 	    		System.out.println("reach exception");
