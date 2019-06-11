@@ -214,7 +214,7 @@ public class PostController {
     			postrepo.save(post).block();
     			Profile p = profilerepo.getByUserId(req.getUserId()).block();
     			boolean notificationstatus  = notificationservice.triggerNotification(Notification.builder().createdon(datetime.getNow()).notifiedBy(req.getRequester())
-	    				.userId(notifier).message(req.getRequester()+" is commented on your post").notifiedByprofilepicurl(p.getProfilePicUrl())
+	    				.userId(notifier).message(p.getUsername()+" is commented on your post").notifiedByprofilepicurl(p.getProfilePicUrl())
 	    				.notifiedByusername(p.getUsername()).postImageOrVidfirstUrl(post.getImg().get(0)).postId(post.getPostId()).build());
 	    		if (notificationstatus==false) {
 	    			log.info("Like Notification falied for post"+ post.getPostId()+ "was tried by requester" +p.getUserId());
@@ -267,7 +267,7 @@ public class PostController {
 		    		
 		    		// Trigger notification
 		    		boolean notificationstatus  = notificationservice.triggerNotification(Notification.builder().createdon(datetime.getNow()).notifiedBy(req.getRequester())
-		    				.userId(notifier).message(req.getRequester()+" is commented on your post").notifiedByprofilepicurl(p.getProfilePicUrl())
+		    				.userId(notifier).message(p.getUsername()+" is commented on your post").notifiedByprofilepicurl(p.getProfilePicUrl())
 		    				.notifiedByusername(p.getUsername()).postImageOrVidfirstUrl(post.getImg().get(0)).postId(post.getPostId()).build());
 		    		if (notificationstatus==false) {
 		    			log.info("Comment Notification falied for post"+ post.getPostId()+ "was tried by requester" +p.getUserId());
@@ -286,8 +286,12 @@ public class PostController {
     	}
     }
 
-    @GetMapping("getListOfCommentersForPost") public ListOfCommentersForPostResponse getListOfCommentersForPost() {
-    	return null;
+    @GetMapping("getListOfCommentersForPost/{postId}") public Flux<Comments> getListOfCommentersForPost(@PathVariable String postId) {
+    	if(postId != null) {
+    	return commentsrepo.findAllCommentsByPostId(postId);
+    	}else {
+    	return	Flux.just(Comments.builder().postID(null).build());
+    	}
     }
     
     @GetMapping("getHomePagePosts") public Flux<RecentPost> getHomePagePosts(){
