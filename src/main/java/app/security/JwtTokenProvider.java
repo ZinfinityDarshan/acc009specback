@@ -37,8 +37,8 @@ public class JwtTokenProvider {
   @Value("${security.jwt.token.secret-key:secret-key}")
   private String secretKey;
 
-  @Value("${security.jwt.token.expire-length:3600000}")
-  private long validityInMilliseconds = 3600000; // 1h
+  @Value("${security.jwt.token.expire-length:60000}")
+  private long validityInMilliseconds = 60000; // 1minute
 
   @Autowired
   private MyUserDetails myUserDetails;
@@ -56,7 +56,9 @@ public class JwtTokenProvider {
     Date now = new Date();
     //Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-    Date validity = DateUtils.addHours(now, 1);
+    //Date validity = DateUtils.addHours(now, 1);
+    //Date validity = DateUtils.addMinutes(now, 1);
+    Date validity = DateUtils.addMonths(now, 6);
     
     return Jwts.builder()//
         .setClaims(claims)//
