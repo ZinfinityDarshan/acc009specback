@@ -138,6 +138,11 @@ public class UserController {
   public List<User> getAllUsers(){
 	return userrepo.findAll();
   }
+  
+  @GetMapping("/validate")
+  public boolean validate() {
+	  return true;
+  }
 
 }
 
