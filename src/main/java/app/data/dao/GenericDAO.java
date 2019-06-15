@@ -100,7 +100,7 @@ public class GenericDAO {
 		{
 		Query q = new Query();
 		List<TrendingPost> trp = new ArrayList<TrendingPost>();
-		q.with(new Sort(Sort.Direction.DESC, "likesCount"));
+		q.with(new Sort(Sort.Direction.ASC, "likesCount"));
 		q.limit(100);
 		dbtemplate.find(q, Post.class).parallelStream().filter(value -> value!=null).forEach(post ->{
 			trp.add(mapper.map(post, TrendingPost.class));

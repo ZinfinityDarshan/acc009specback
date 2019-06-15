@@ -1,5 +1,7 @@
 package app.controller;
 
+import java.util.Comparator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +38,7 @@ public class StreamingController {
 	 */
 	@GetMapping("/getTrends")
 	public Flux<TrendingPost> getTrendingPots(){
-		return trendingrepo.findAll();
+		return Flux.fromStream(trendingrepo.findAll().toStream().sorted(Comparator.comparing(TrendingPost::getUpdatedOn).reversed()));
 	}
 	
 }

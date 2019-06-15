@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -48,6 +49,12 @@ public class TrendingPost {
 	@Indexed
 	private int likesCount;
 	private int commentsCount;
+	
+	//if the post is approved or not
+	private boolean status;
+	
+	@Transient
+	private boolean likedByRequester;
 	
 	//connecting Likes.id
 	private String likes_id;

@@ -60,6 +60,9 @@ public class Post {
 	private List<String> comments_ids;
 	private boolean recent;
 	
+	//if the post is approved or not
+	private boolean status;
+	
 	@Transient
 	private boolean likedByRequester;
 
